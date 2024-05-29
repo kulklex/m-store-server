@@ -5,6 +5,7 @@ const productRoutes = require('./routes/products')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const dotenv = require('dotenv')
+const path = require('path')
 const app = express()
 
 
@@ -20,6 +21,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 //Cors should be above your middleware
 app.use(cors())
 
@@ -29,6 +33,9 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', userRoutes)
 app.use('/api/products', productRoutes)
+
+
+
 
 const CONNECTION_URL = process.env.CONNECTION_URL
 const PORT = process.env.PORT || 5000
