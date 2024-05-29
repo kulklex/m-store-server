@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const userRoutes = require('./routes/auth')
 const productRoutes = require('./routes/products')
 const orderRoutes = require('./routes/order')
+const paystackRoutes = require('./routes/paystack')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const dotenv = require('dotenv')
@@ -35,7 +36,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', userRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
-
+app.use('/api/paystack', paystackRoutes)
 
 
 const CONNECTION_URL = process.env.CONNECTION_URL

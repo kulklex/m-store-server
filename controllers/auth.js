@@ -32,6 +32,7 @@ const signUp = async (req, res) => {
     }
 };
 
+
 // Sign In Controller
 const signIn = async (req, res) => {
     const { email, password } = req.body;
@@ -40,7 +41,6 @@ const signIn = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (!existingUser) return res.status(404).json({ message: "Invalid email or password" });
 
-        // Note that the password is encrypted as to why we're making use of bcrypt
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
         if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid email or password" });
 
@@ -51,4 +51,4 @@ const signIn = async (req, res) => {
     }
 };
 
-module.exports = { signUp, signIn };
+module.exports = { signUp, signIn, secret };
