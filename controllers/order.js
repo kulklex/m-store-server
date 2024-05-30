@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 // Create an Order
 const createOrder = async (req, res) => {
-    const { items, totalAmount } = req.body;
+    const order = req.body;
     const userId = req.user.id;
 
     try {
@@ -12,13 +12,9 @@ const createOrder = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const order = new Order({
-            user: userId,
-            items,
-            totalAmount
-        });
+        const newOrder = new Order({...order, createdAt: new Date().toISOString()});
 
-        const savedOrder = await order.save();
+        const savedOrder = await newOrder.save();
         res.status(201).json({ order: savedOrder, message: 'Order created!' });
     } catch (error) {
         res.status(500).json({ message: 'Error creating order', error });
