@@ -51,4 +51,19 @@ const signIn = async (req, res) => {
     }
 };
 
-module.exports = { signUp, signIn, secret };
+
+
+// Fetch user details
+const getUser = async (req, res) => {
+    const userId = req.user.id
+    
+    try {
+        const user = await User.findById(userId).select('-password'); // Exclude password field
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+}
+
+module.exports = { signUp, signIn, secret, getUser };
