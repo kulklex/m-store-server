@@ -9,6 +9,7 @@ const orderSchema = mongoose.Schema({
     totalAmount: { type: Number, required: true },
     status: { type: String, default: 'Pending' },
     createdAt: { type: Date, default: Date.now },
+    delivery: {type: Object, required: true},
     paymentReference: { type: String }
 });
 

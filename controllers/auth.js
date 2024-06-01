@@ -8,8 +8,17 @@ const generateSecret = () => {
     return crypto.randomBytes(64).toString('hex');
 };
 
-// Auto-generate secret for jwt
-const secret = generateSecret();
+const accessTokenSecret = generateSecret();
+const refreshTokenSecret = generateSecret();
+const refreshTokens = [];
+
+// Generate tokens
+const generateTokens = (user) => {
+    const accessToken = jwt.sign({ email: user.email, id: user._id }, accessTokenSecret, { expiresIn: '15m' });
+    const refreshToken = jwt.sign({ email: user.email, id: user._id }, refreshTokenSecret, { expiresIn: '7d' });
+    return { accessToken, refreshToken };
+  };
+
 
 // Sign Up Controller
 const signUp = async (req, res) => {
@@ -24,9 +33,10 @@ const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const result = await User.create({ email, password: hashedPassword, firstName, lastName });
-        const token = jwt.sign({ email: result.email, id: result._id }, secret, { expiresIn: '3h' });
+        const { accessToken, refreshToken } = generateTokens(result);
+        refreshTokens.push(refreshToken);
 
-        res.status(200).json({ result, token });
+        res.status(200).json({ result, accessToken, refreshToken });
     } catch (error) {
         res.status(500).json({ message: "Couldn't process the signUp....", error });
     }
@@ -44,8 +54,10 @@ const signIn = async (req, res) => {
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
         if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid email or password" });
 
-        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, secret, { expiresIn: '2h' });
-        res.status(200).json({ result: existingUser, token });
+        const { accessToken, refreshToken } = generateTokens(existingUser);
+        refreshTokens.push(refreshToken);
+
+        res.status(200).json({ result: existingUser, accessToken, refreshToken });
     } catch (error) {
         res.status(500).json({ message: "Couldn't process the signIn....", error });
     }
@@ -66,4 +78,19 @@ const getUser = async (req, res) => {
     }
 }
 
-module.exports = { signUp, signIn, secret, getUser };
+
+const getRefreshTokens = async (req, res) => {
+    const { token } = req.body;
+    if (!token) return res.sendStatus(401);
+  
+    if (!refreshTokens.includes(token)) return res.sendStatus(403);
+  
+    jwt.verify(token, refreshTokenSecret, (err, user) => {
+      if (err) return res.sendStatus(403);
+  
+      const newAccessToken = jwt.sign({ email: user.email, id: user.id }, accessTokenSecret, { expiresIn: '15m' });
+      res.json({ accessToken: newAccessToken });
+    });
+}
+
+module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens };
