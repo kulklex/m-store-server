@@ -30,8 +30,8 @@ const verifyToken = async (req, res, next) => {
                 if (err) {
                     return res.status(403).json({ message: 'Failed to authenticate refresh token' });
                 }
-
-                const newAccessToken = jwt.sign({ email: user.email, id: user._id }, accessTokenSecret, { expiresIn: '15m' });
+                
+                const newAccessToken = jwt.sign({ email: user.email, id: user.id }, accessTokenSecret, { expiresIn: '1h' });
                 res.setHeader('x-access-token', newAccessToken);
 
                 const decoded = jwt.verify(newAccessToken, accessTokenSecret);
