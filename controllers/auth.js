@@ -17,7 +17,7 @@ const generateTokens = (user) => {
     const accessToken = jwt.sign({ email: user.email, id: user._id }, accessTokenSecret, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ email: user.email, id: user._id }, refreshTokenSecret, { expiresIn: '7d' });
     return { accessToken, refreshToken };
-  };
+};
 
 
 // Sign Up Controller
@@ -79,6 +79,7 @@ const getUser = async (req, res) => {
 }
 
 
+// Refresh token controller
 const getRefreshTokens = async (req, res) => {
     const { token } = req.body;
     if (!token) return res.sendStatus(401);
@@ -93,4 +94,23 @@ const getRefreshTokens = async (req, res) => {
     });
 }
 
-module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens };
+
+// Reset Password Controller
+const resetPassword = async (req, res) => {
+    const { email, newPassword } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+        res.status(500).json({ message: 'Could not reset password', error });
+    }
+};
+
+module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens, resetPassword };
