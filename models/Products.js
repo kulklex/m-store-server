@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const productsSchema = mongoose.Schema({
+const productsSchema = new mongoose.Schema({
     id: {
         type: Number
     },

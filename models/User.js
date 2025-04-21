@@ -1,6 +1,6 @@
-const mongoose =require('mongoose')
+const mongoose = require('mongoose')
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true
@@ -16,7 +16,30 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    username: {
+        type: String
+    },
+    clerkId: {
+        type: String
+    },
+    bio: {
+        type: String
+    },
+    image: {
+        type: String
+    },
+    followers: {
+        type: Number
+    },
+    following: {
+        type: Number
+    },
+    posts: {
+        type: Number
+    },
+}, {
+    timestamps: true
 })
 
 

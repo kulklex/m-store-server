@@ -113,4 +113,18 @@ const resetPassword = async (req, res) => {
     }
 };
 
-module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens, resetPassword };
+
+// Get User by Clerk Id
+const getUserByClerkID = async (req, res) => {
+    const clerkId = req.user.clerkId
+
+    try {
+        const user = await User.findOne({clerkId: clerkId})
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Couldn't fetch user by clerkId....", error });
+    }
+    
+}
+
+module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens, resetPassword, getUserByClerkID };

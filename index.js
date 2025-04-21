@@ -4,6 +4,9 @@ const userRoutes = require('./routes/auth')
 const productRoutes = require('./routes/products')
 const orderRoutes = require('./routes/order')
 const paystackRoutes = require('./routes/paystack')
+const postRoutes = require('./routes/posts')
+const commentsRoutes = require('./routes/comment')
+const likesRoutes = require('./routes/likes')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const dotenv = require('dotenv')
@@ -37,10 +40,13 @@ app.use('/api/auth', userRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/paystack', paystackRoutes)
+app.use('/api/posts', postRoutes)
+app.use('/api/comments', commentsRoutes)
+app.use('/api/likes', likesRoutes)
 
 
 const CONNECTION_URL = process.env.CONNECTION_URL
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 
 
 mongoose.connect(CONNECTION_URL)
