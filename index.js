@@ -1,5 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
+
+// Import routes
 const userRoutes = require('./routes/auth')
 const productRoutes = require('./routes/products')
 const orderRoutes = require('./routes/order')
@@ -7,6 +9,10 @@ const paystackRoutes = require('./routes/paystack')
 const postRoutes = require('./routes/posts')
 const commentsRoutes = require('./routes/comment')
 const likesRoutes = require('./routes/likes')
+const followRoutes = require('./routes/follows')
+const notificationRoutes = require('./routes/notifications')
+
+
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const dotenv = require('dotenv')
@@ -43,6 +49,8 @@ app.use('/api/paystack', paystackRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/comments', commentsRoutes)
 app.use('/api/likes', likesRoutes)
+app.use('/api/follows', followRoutes)
+app.use('/api/notifications', notificationRoutes)
 
 
 const CONNECTION_URL = process.env.CONNECTION_URL

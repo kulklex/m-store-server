@@ -127,4 +127,40 @@ const getUserByClerkID = async (req, res) => {
     
 }
 
-module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens, resetPassword, getUserByClerkID };
+const syncGoogleLogin = async (req, res) => {
+    try {
+      const { firstName, lastName, username, bio, image } = req.body;
+      const clerkId = req.user.sub;
+  
+      const existingUser = await User.findOne({ clerkId });
+  
+      if (existingUser) {
+        const updatedUser = await User.findOneAndUpdate(
+          { clerkId },
+          { firstName, lastName, username, bio, image },
+          { new: true }
+        );
+        return res.status(200).json(updatedUser);
+      }
+  
+      const userData = await clerkClient.users.getUser(clerkId);
+  
+      const newUser = await User.create({
+        firstName: userData.firstName || firstName,
+        lastName: userData.lastName || lastName,
+        email: userData.emailAddresses[0].emailAddress,
+        password: 'oauth-google', // Placeholder
+        username,
+        bio,
+        image: userData.imageUrl || image,
+        clerkId,
+      });
+  
+      res.status(201).json(newUser);
+    } catch (error) {
+      console.error('User sync failed:', error);
+      res.status(500).json({ message: 'Failed to sync user' });
+    }
+  }
+
+module.exports = { signUp, signIn, refreshTokens, getUser, getRefreshTokens, accessTokenSecret, refreshTokenSecret, refreshTokens, resetPassword, getUserByClerkID, syncGoogleLogin };

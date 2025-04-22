@@ -1,5 +1,5 @@
 const express = require('express');
-const { likePost, unlikePost, getLikesByPost, getUserLikes } = require('../controllers/order');
+const { likePost, unlikePost, getLikesByPost, getUserLikes } = require('../controllers/likes');
 const router = express.Router();
 const { clerkVerifyToken } = require('../middlewares/verifyClerkToken');
 
