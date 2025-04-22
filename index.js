@@ -11,6 +11,7 @@ const commentsRoutes = require('./routes/comment')
 const likesRoutes = require('./routes/likes')
 const followRoutes = require('./routes/follows')
 const notificationRoutes = require('./routes/notifications')
+const bookmarkRoutes = require('./routes/bookmark')
 
 
 const bodyParser = require('body-parser')
@@ -51,7 +52,7 @@ app.use('/api/comments', commentsRoutes)
 app.use('/api/likes', likesRoutes)
 app.use('/api/follows', followRoutes)
 app.use('/api/notifications', notificationRoutes)
-
+app.use('/api/bookmarks', bookmarkRoutes)
 
 const CONNECTION_URL = process.env.CONNECTION_URL
 const PORT = process.env.PORT || 3000
